@@ -10,15 +10,11 @@ function backproject(proj::Matrix{Float64}, N::Integer)
     img = zeros(N, N)
 
     for (m, ϕm) in enumerate(ϕ)
-        sinϕ = sin(ϕm)
-        cosϕ = cos(ϕm)
-        for (k, xk) in enumerate(x), (l, yl) in enumerate(y)
-            ξ = xk * cosϕ + yl * sinϕ
-            idx = round(Int, ns*(ξ+1)/2)
-            if 1 <= idx <= ns
-                img[l,k] += proj[idx,m]
-            end
-        end
+        ξ = x' * cos(ϕm) .+ y * sin(ϕm)
+        idx = round.(Int, ns*(ξ.+1)./2)
+        idxvalid = 1 .< idx .< ns
+        idx[.!idxvalid] .= 1
+        img[idxvalid] += proj[idx,m][idxvalid]
     end
     img
 end
