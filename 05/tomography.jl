@@ -8,11 +8,16 @@ function backproject(proj::Matrix{Float64}, N::Integer)
     y = range(-1, 1, length=N)
     ns = size(proj,1)
     img = zeros(N, N)
-    for (k, xk) in enumerate(x), (l, yl) in enumerate(y), (m, ϕm) in enumerate(ϕ)
-        ξ = xk * cos(ϕm) + yl * sin(ϕm)
-        idx = round(Int, ns*(ξ+1)/2)
-        if 1 < idx < ns
-            img[l,k] += proj[idx,m]
+
+    for (m, ϕm) in enumerate(ϕ)
+        sinϕ = sin(ϕm)
+        cosϕ = cos(ϕm)
+        for (k, xk) in enumerate(x), (l, yl) in enumerate(y)
+            ξ = xk * cosϕ + yl * sinϕ
+            idx = round(Int, ns*(ξ+1)/2)
+            if 1 <= idx <= ns
+                img[l,k] += proj[idx,m]
+            end
         end
     end
     img
