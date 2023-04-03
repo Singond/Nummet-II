@@ -12,7 +12,7 @@ function backproject(proj::Matrix{Float64}, N::Integer)
     for (m, ϕm) in enumerate(ϕ)
         ξ = x' * cos(ϕm) .+ y * sin(ϕm)
         idx = round.(Int, ns*(ξ.+1)./2)
-        idxvalid = 1 .< idx .< ns
+        idxvalid = 1 .<= idx .<= ns
         idx[.!idxvalid] .= 1
         img[idxvalid] += proj[idx,m][idxvalid]
     end
