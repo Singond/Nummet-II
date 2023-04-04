@@ -1,0 +1,87 @@
+\documentclass[a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage{amsmath}
+\usepackage{physics}
+
+\title{Prokládání dat metodou nejmenších čtverců}
+\date{2023-04-04}
+
+\begin{document}
+\section{Úvod}
+\begin{equation}
+    (x_i, y_i), \sigma_i \quad i = 1 \dots N
+    \quad \text{model}\ y(x, a_1, a_2, \dots a_M)
+\end{equation}
+\begin{align}
+    \chi^2(\vec{a})
+    &= \sum_{i = 1}^{N} \left[\frac{y_i - y(x_i, \vec{a})}{\sigma_i}\right]^2
+    = \sum_{i = 1}^{N} \Delta^2_i
+    \rightarrow \vec{a}_\text{min} \chi^2_\text{min}
+    \\
+    g_k &= \pdv{\chi^2}{a_k}
+    = \sum_{i=1}^{N} -2\Delta_i \frac{1}{\sigma_i}\eval{\pdv{y}{a_k}}_{\vec{a}}
+\end{align}
+
+\section{Lineární fitování}
+\begin{equation}
+    y(x) = \sum_{k=1}^{M} a_k \, \phi_k(x)
+\end{equation}
+
+\section{Nelineární fitování}
+\subsection{Gaussova-Newtonova metoda}
+\begin{equation}
+    \vec{a}^{(0)} \rightarrow g_k(\vec{a}^{(0)} + \delta\vec{a})
+    = g_k(\vec{a}^{(0)}) + H_{\vec{a^{(0)}}} = 0
+\end{equation}
+\begin{align}
+    \delta\vec{a} &= H^{-1}(-\nabla_{\vec{a}} \chi^2) \\
+    \vec{a}^{(1)} &= \vec{a}^{(0)} + \delta\vec{a}
+\end{align}
+Ukazuje se, že Gaussova-Newtonova metoda nefunguje dobře daleko od minima,
+kdy může skončit někde úplně jinde.
+Tento problém se snaží odstranit Levenberg-Marquardtův algoritmus.
+
+\subsection{Levenberg-Marquardtův algoritmus}
+Je kombinace Gaussovy-Newtonovy metody a metody největšího spádu.
+\begin{equation}
+    (J^TJ + \lambda \operatorname{diag}J^TJ) \, \delta\vec{a} = -J^T\Delta^T
+\end{equation}
+Při $\lambda = 0$ tedy krok přechází v~krok Gaussovy-Newtonovy metody,
+při $\lambda \gg 1$ zase v~metodu největšího spádu.
+
+Začíná se s~$lambda = 10^{-3}$.
+\begin{align}
+    \chi^2 (\vec{a} + \delta\vec{a}) &< \chi^2(\vec{a})
+    & &\text{$\vec{a}$ přijmeme, $\lambda\ 10\times$ menší} \\
+    \chi^2 (\vec{a} + \delta\vec{a}) &> \chi^2(\vec{a})
+    & &\text{$\vec{a}$ nepřijmeme, $\lambda\ 10\times$ větší}
+\end{align}
+Nakonec se spočítá kovarianční matice $C^{-1} = \frac{1}{2} H$.
+
+\section{Nejistoty}
+\begin{align}
+    \Delta\chi^2 &= \chi^2 - \chi_\text{min}^2 \\
+    \Delta\vec{a} &= \vec{a} - \vec{a}_\text{min}^2
+    \approx \frac{1}{2}\,\delta\vec{a}^T H \,\delta\vec{a}
+    = \delta\vec{a}^T C^{-1} \,\delta\vec{a}
+\end{align}
+Neznáme-li $\sigma_i$, můžeme je odhadnout:
+\begin{equation}
+    \sigma = \sqrt{\frac{1}{N - M}(y - y(x_i, \vec{a}_\text{min}))^2}
+\end{equation}
+
+\subsection{Kuchařka}
+\begin{enumerate}
+    \item Vybereme relevantní parametry (počet $k$)
+    \item Zvolíme úroveň spolehlivosti P a~z~ní $\Delta{\chi^2}$
+    \begin{equation}
+        \Delta\chi^2 = F_k^{-1}(P)
+    \end{equation}
+    \item Promítneme kovarianční matici $C$
+    na $k \times k \rightarrow C_\text{proj}$
+    \item Vyznačíme oblast s~$\Delta\chi^2 \leq \text{předepsaná}$.
+    \begin{equation}
+        \Delta\chi^2 \geq \delta a^T C_\text{proj}^{-1} \, \delta\vec{a}
+    \end{equation}
+\end{enumerate}
+\end{document}
