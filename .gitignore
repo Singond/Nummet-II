@@ -1,5 +1,6 @@
 *.pdf
 *.zip
+*profile.pb.gz
 
 *.aux
 *.fdb_latexmk
