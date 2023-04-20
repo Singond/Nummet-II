@@ -9,12 +9,17 @@ function backproject(proj::Matrix{Float64}, N::Integer)
     ns = size(proj,1)
     img = zeros(N, N)
 
+    ξ = zeros(N, N)
+    idx = zeros(Int, N, N)
     for (m, ϕm) in enumerate(ϕ)
-        ξ = x' * cos(ϕm) .+ y * sin(ϕm)
-        idx = round.(Int, ns * (ξ .+ 1) ./ 2)
-        idxvalid = 1 .<= idx .<= ns
-        idx[.!idxvalid] .= 1
-        img[idxvalid] += proj[idx,m][idxvalid]
+        ξ .= x' .* cos(ϕm) .+ y .* sin(ϕm)
+        idx .= round.(Int, ns .* (ξ .+ 1) ./ 2)
+        for k in 1:length(x), l in 1:length(y)
+            ix = idx[l,k]
+            if 1 <= ix <= ns
+                img[l,k] += proj[ix,m]
+            end
+        end
     end
     img
 end
@@ -23,7 +28,7 @@ function filter_projection(proj::Matrix{Float64}, filter::Vector{Float64})
     filtered = similar(proj)
     for (c, p) in enumerate(eachcol(proj))
         pt = fft(p)
-        pt = pt .* filter
+        pt .= pt .* filter
         filtered[:,c] = real(ifft(pt))
     end
     filtered
