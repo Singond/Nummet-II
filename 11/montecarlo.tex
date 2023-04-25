@@ -1,0 +1,66 @@
+\documentclass[a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage{amsmath}
+\usepackage{physics}
+
+\title{Simulace metodou Monte Carlo}
+\date{2023-04-25}
+
+\begin{document}
+Jednoduché simulace pomocí metody Monte Carlo:
+radioaktivní rozpad, náhodné procházky.
+
+\section{Radioaktivní rozpad}
+Simulujeme známý výsledek:
+\begin{equation}
+    N(t) = N(0) \, e^{-\frac{t}{\tau}},
+\end{equation}
+kde $\tau$ je charakteristický čas rozpadu.
+
+Začneme s~$N$ jádry a~v~každém kroku pro každé jádro určíme,
+zdali se rozpadne, či ne.
+Pravděpodobnost rozpadu za $\dd{t}$ je:
+\begin{equation}
+    P(\text{rozpad za dt}) = \frac{\dd{t}}{\tau}.
+\end{equation}
+
+\section{Náhodná procházka}
+\subsection{Náhodné kráčení v~1D s~pevným krokem}
+Začneme v~určitém bodě a~v~každém kroku se rozhodneme,
+zdali se vydáme doleva či doprava.
+Rozdělovací funkce navštívených bodů má šířku úměrnou $\sqrt{N}$.
+
+\subsection{Náhodné kráčení ve~2D po mřížce}
+Zase nějaká gaussovka.
+
+\subsection{Náhodná procházka ve~2D s~pevným krokem a~náhod\-ným směrem}
+\newcommand\sumN{\sum_{i=1}^N}
+\newcommand\mean[1]{\langle #1 \rangle}
+Náhodný směr je dán $\varphi = 2 \pi r$.
+Pro $N$ kroků:
+\begin{equation}
+    \{\varphi_i\}_{i=1}^N \rightarrow
+\end{equation}
+\begin{align}
+    \vec{r}_N &= \left(
+        \sum_{i=1}^N \cos\varphi_i, \sum_{i=1}^N \sin\varphi_i
+    \right)
+    \\
+    \langle r^2 \rangle &= \langle
+        \left(\sum_{i=1}^N \cos\varphi_i\right)^2
+        + \left(\sum_{i=1}^N \sin\varphi_i\right)^2
+    \rangle
+    \\
+    &= \langle \sumN \cos^2 \varphi_i
+        + \sum_i\sum_{j \ne i} \cos\varphi_i\cos\varphi_j
+        + \sumN \sin^2 \varphi_i
+        + \sum_i\sum_{j \ne i} \sin\varphi_i\sin\varphi_j
+    \\
+    &= \sumN \mean{\cos^2 \varphi_i}
+        + \sum_i\sum_{j \ne i} \mean{\cos\varphi_i\cos\varphi_j}
+        + \sumN \mean{\sin^2 \varphi_i}
+        + \sum_i\sum_{j \ne i} \mean{\sin\varphi_i\sin\varphi_j}
+    \\
+    &= N \mean{\cos^2\varphi + \cos^2\varphi} = N
+\end{align}
+\end{document}
