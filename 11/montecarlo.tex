@@ -36,17 +36,19 @@ Zase nějaká gaussovka.
 \subsection{Náhodná procházka ve~2D s~pevným krokem a~náhod\-ným směrem}
 \newcommand\sumN{\sum_{i=1}^N}
 \newcommand\mean[1]{\langle #1 \rangle}
-Náhodný směr je dán $\varphi = 2 \pi r$.
-Pro $N$ kroků:
+Náhodný směr je dán $\varphi = 2 \pi r$, počet kroků je $N$.
 \begin{equation}
     \{\varphi_i\}_{i=1}^N \rightarrow
 \end{equation}
-\begin{align}
-    \vec{r}_N &= \left(
+Polohu koncového bodu po $N$ krocích označme $\vec r$.
+\begin{equation}
+    \vec{r}_N = \left(
         \sum_{i=1}^N \cos\varphi_i, \sum_{i=1}^N \sin\varphi_i
-    \right)
-    \\
-    \langle r^2 \rangle &= \langle
+        \right).
+    \end{equation}
+Střední vzdálenost koncového bodu od počátku je:
+\begin{align}
+    \langle r_N^2 \rangle &= \langle
         \left(\sum_{i=1}^N \cos\varphi_i\right)^2
         + \left(\sum_{i=1}^N \sin\varphi_i\right)^2
     \rangle
@@ -61,6 +63,25 @@ Pro $N$ kroků:
         + \sumN \mean{\sin^2 \varphi_i}
         + \sum_i\sum_{j \ne i} \mean{\sin\varphi_i\sin\varphi_j}
     \\
-    &= N \mean{\cos^2\varphi + \cos^2\varphi} = N
+    &= N \mean{\cos^2\varphi + \cos^2\varphi}
+    \\
+    &= N
 \end{align}
+
+(Dále byla počítána poloha gyračního poloměru.)
+
+\subsubsection{Rozdělení poloh koncových bodů}
+\begin{align}
+    x_N &= \sumN \cos\varphi_i
+    \\
+    \mean{\cos\varphi_i} &= 0
+    \\
+    \sigma^2 &= \mean{cos^2\varphi}
+        = \frac{1}{2\pi} \int_0^{2\pi} \cos^2\varphi \dd{\varphi} = \frac12
+    \\
+    \sigma &= \frac{1}{\sqrt{2}}
+\end{align}
+
+%Podle centrální limitní věty vyjde gaussovo rozdělení s~$\mu = 0$
+%~$\sigma = \frac{}{}.
 \end{document}
