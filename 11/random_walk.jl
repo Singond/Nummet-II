@@ -1,14 +1,14 @@
 using Plots
 
-function randomwalk2(steps; r = 1, x0 = 0, y0 = 0)
+function randomwalk2(steps; d = 1, x0 = 0, y0 = 0)
     x = zeros(steps)
     y = zeros(steps)
     x[1] = x0
     y[1] = y0
     for k in 2:steps
         a = 2pi * rand()
-        x[k] = x[k-1] + r * cos(a)
-        y[k] = y[k-1] + r * sin(a)
+        x[k] = x[k-1] + d * cos(a)
+        y[k] = y[k-1] + d * sin(a)
     end
     (x, y)
 end
