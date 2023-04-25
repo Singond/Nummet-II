@@ -42,3 +42,12 @@ for (k, wk) in enumerate(walks)
 end
 
 plot(rr ./ walks, label = map(w -> "Nwalks = $w", walks))
+gui() #Display the plot
+
+# For large number of simulations, do not store x and y
+walks = 1e4
+r = zeros(steps)
+for k = 1:walks
+    xk, yk = randomwalk2(steps)
+    global r += meandist(xk, yk)
+end
