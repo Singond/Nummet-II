@@ -9,8 +9,10 @@ using Monte Carlo integration.
 """
 function hypersphere_mc(dim, N)
     S = 0
+    x = zeros(dim)
     for k = 1:N
-        x = 2 * rand(dim) .- 1
+        #x .= 2 .* rand(dim) .- 1  # Slow, allocates rand(dim) every cycle
+        @. x = 2 * rand() - 1      # Equivalent to x .= 2 .* rand.() .- 1
         S += norm(x) < 1
     end
     2^dim * S / N
@@ -21,7 +23,7 @@ Return the volume of a unit hypersphere of dimension dim.
 """
 hypersphere_exact(dim) = 2pi^(dim / 2) / (dim * gamma(dim / 2))
 
-Dmax = 16
+Dmax = 20
 N = 1e6
 
 D = 1:Dmax
