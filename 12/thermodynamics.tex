@@ -1,0 +1,78 @@
+\documentclass[a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage{amsmath}
+\usepackage{physics}
+
+\title{Termodynamické simulace metodou Monte Carlo}
+\date{2023-05-02}
+
+\newcommand\boltzmann{k_\mathrm{B}}
+
+\begin{document}
+\section{Isingův model}
+Nejjednodušší model magnetismu.
+Nevymyslel ho Ernst Ising, ale jeho školitel.
+
+Mějme síť $L \times L$ bodů, v~každém uzlu je spin
+orientovaný nahoru či dolů, $\sigma = \pm 1$.
+Celkový magnetický moment je:
+\begin{equation}
+    M = \sum_i \sigma_i.
+\end{equation}
+
+Máme tedy $L^2$ spinů, počet možných konfigurací je $2^{L^2}$.
+Konfiguraci označme $S$, energii této konfigurace $E_S$.
+
+\begin{align}
+    H &= -J \sum_{\langle i j \rangle} \sigma_i \sigma_j
+    \\
+    P(S) &= \frac{1}{Z} e^{-\frac{E_S}{\boltzmann T}}
+    \\
+    \langle M \rangle &= \sum_S M_S \, P(S)
+        = sum_S M_S \frac{1}{Z} e^{-\beta E_S}
+\end{align}
+
+Partiční suma:
+\begin{equation}
+    Z = \sum_S e^{-\beta E_s},
+\end{equation}
+kde $\beta = \frac{1}{\boltzmann T}$.
+
+Dá se to vyjádřit také pomocí entropie. Volná energie je:
+\begin{equation}
+    F = U - TS
+\end{equation}
+Teplota potom vyjadřuje vyvážení mezi vnitřní energií a entropickým členem.
+
+\emph{Importance sampling}: Vybíráme body hustěji v~určitých oblastech.
+
+\subsection{Markovův řetězec}
+\begin{equation}
+    S_0 \rightarrow S_1 \rightarrow S_2 \rightarrow S_3 \rightarrow \dots
+\end{equation}
+Procházíme celou mřížku. V~každém kroku se ptáme, zdali převrátit spin.
+
+\subsection{Princip detailního vyvážení}
+Pravděpodobnosti výskytu stavu S a S':
+\begin{align}
+    P(S) &\sim e^{-\beta E_S}
+    \\
+    P(S') &\sim e^{-\beta E_{S'}}
+\end{align}
+Přechody mezi stavy $W(S \rightarrow S'), W(S' \rightarrow S)$.
+
+Znění principu:
+\begin{equation}
+    P(S) W(S \rightarrow S') = P(S') W(S' \rightarrow S).
+\end{equation}
+
+\section{Metropolisův algoritmus}
+\begin{equation}
+    W(S \rightarrow S') = \begin{cases}
+        1 & E_{S'} < E_S \\
+        \frac{1}{2} & E_{S'} = E_S \\
+        e^{-\beta(E_{S'} - E_S)} & E_{S'} > E_S \\
+    \end{cases}
+\end{equation}
+
+\end{document}
