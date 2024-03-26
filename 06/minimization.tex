@@ -1,0 +1,100 @@
+\documentclass[a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage{amsmath}
+\usepackage{physics}
+
+\title{Minimalizace ve více rozměrech}
+\date{6. března 2024}
+
+\newcommand\xmin{\vec x_{\mathrm{min}}}
+
+\begin{document}
+
+Hessova matice $H_{\alpha\beta}$: Matice druhých derivací funkce $f$
+podle nezávislých proměnných $x_i$.
+Je pozitivně-definitní, tzn.~její vlastní hodnoty jsou kladné reálné.
+
+Její vlastní vektory určují takzvané \emph{konjugované směry},
+v~nichž jsou minimalizace nezávislé.
+Lze tedy potom postupně minimalizovat v~každém význačném směru,
+což povede k~celkovému minimu.
+
+Obvykle však Hessovu matici neznáme (počítá se analyticky),
+tudíž neznáme ani konjugované směry.
+Existují ale metody, jak je odhadnout.
+
+\subsection{Powellova metoda}
+
+\begin{equation}
+    f (\vec{P}_n + \lambda \vec{u}_n) \quad \lambda \in (-\infty, \infty)
+\end{equation}
+
+V prvním kroku směry odpovídají směrům souřadných os.
+Celkový směr poklesu potom přidáme na konec seznamu směrů
+a~první směr naopak škrtneme.
+Takto postupně aktualizujeme konjugované směry.
+
+\subsection{Metoda největšího spádu}
+Postupujeme ve směru největšího spádu, tj.~záporného gradientu.
+
+\begin{align}
+    & \vec h_0 = -\grad f |_{\vec x_0} = -\vec g_0 \\
+    & f(\vec x_0 + \lambda \vec h_0) \\
+    & \vec h_1 = -\vec g_1
+\end{align}
+
+Problém je, že následující gradient je kolmý na aktuální.
+To může vést k~problémům nebo neefektivitě.
+
+\subsection{Metoda konjugovaných gradientů}
+
+\begin{align}
+    & \vec h_{n+1} = -\vec g_{n+1} + \sum_{j=1}^n a_{jn} \vec \Delta_j
+    & min f(\vec x_{n+1} + \lambda \vec h_{n+1}) = \vec x_2
+\end{align}
+
+Optimalizace $a_{jn}$ s~předpokladem kvadr.~$f$.
+
+\subsubsection{Fletcher-Reeves}
+\begin{equation}
+    \vec h_{n+1} = -\vec g_{n+1} + \vec h_n
+    \frac{\vec g_{n+1} \cdot \vec g_{n+1}}
+        {\vec g_{n} \cdot \vec g_{n}}
+\end{equation}
+
+\subsubsection{Polak-Ribiere}
+\begin{equation}
+    \vec h_{n+1} = -\vec g_{n+1} + \vec h_n
+    \frac{(\vec g_{n+1} - \vec g_{n}) \cdot \vec g_{n+1}}
+        {\vec g_{n} \cdot \vec g_{n}}
+\end{equation}
+
+\subsection{Metoda variabilní metriky}
+
+\begin{equation}
+    \partial_\alpha f(\vec x) \approx 0
+    + \frac{\partial \, \partial_\alpha f}{\partial x_b} |_{min}\,
+    (\vec x - \vec x_{min})_\beta
+    = H_{\alpha\beta} \, (\vec x - \vec x_{min})_\beta
+\end{equation}
+
+\begin{align}
+    & \vec g = \grad f = H(\vec x - \xmin) \\
+    & \xmin = \vec x - H^{-1} \vec g \\
+    & \vec g_{n+1} - \vec g_n = H (\vec x_{n+1} - \vec x_n)
+\end{align}
+
+\subsubsection{Davidon-Fletcher-Powel}
+
+\begin{equation}
+    H_{n+1}^{-1} - H_{n}^{-1}
+    = \frac{\vec \Delta \vec \Delta^T}
+        {\vec \Delta^T \vec \delta^T}
+    - \frac{(H_n^{-1} \vec \delta)(H_n^{-1} \vec \delta)^T}
+        {(H_n^{-1} \vec \delta)^T \vec \delta}
+\end{equation}
+
+\subsubsection{Broyden-Fletcher-Goldfarb-Shanno (BFGS)}
+Používanější.
+
+\end{document}
